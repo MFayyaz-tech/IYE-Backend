@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "../../common/entities/base.entity";
 import { User } from "../../users/entities/user.entity";
+import { Market } from "../../market/entities/market.entity";
 
 @Entity("stores")
 export class Store extends BaseEntity {
@@ -12,8 +13,12 @@ export class Store extends BaseEntity {
   @Column({ type: "varchar", length: 500, nullable: true, default: null })
   cover_image: string | null;
 
-  @Column({ type: "varchar", length: 255 })
-  market: string;
+  @Column({ type: "int" })
+  market_id: number;
+
+  @ManyToOne(() => Market, { onDelete: "RESTRICT" })
+  @JoinColumn({ name: "market_id" })
+  market: Market;
 
   @Column({ type: "varchar", length: 255 })
   store_name: string;

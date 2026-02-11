@@ -20,7 +20,7 @@ export class StoreService {
     const store = this.storeRepository.create({
       logo: data.logo ?? null,
       cover_image: data.cover_image ?? null,
-      market: data.market,
+      market_id: data.market_id,
       store_name: data.store_name,
       open_time: data.open_time ?? null,
       closed_time: data.closed_time ?? null,
@@ -36,7 +36,7 @@ export class StoreService {
   async findById(id: number): Promise<Store | null> {
     return this.storeRepository.findOne({
       where: { id },
-      relations: ["vendor"],
+      relations: ["vendor", "market"],
     });
   }
 
@@ -46,7 +46,7 @@ export class StoreService {
   async findAll(): Promise<Store[]> {
     return this.storeRepository.find({
       order: { created_at: "DESC" },
-      relations: ["vendor"],
+      relations: ["vendor", "market"],
     });
   }
 
@@ -57,7 +57,18 @@ export class StoreService {
     return this.storeRepository.find({
       where: { vendor_id: vendorId },
       order: { created_at: "DESC" },
-      relations: ["vendor"],
+      relations: ["vendor", "market"],
+    });
+  }
+
+  /**
+   * Find all stores by market ID
+   */
+  async findByMarketId(marketId: number): Promise<Store[]> {
+    return this.storeRepository.find({
+      where: { market_id: marketId },
+      order: { created_at: "DESC" },
+      relations: ["vendor", "market"],
     });
   }
 
@@ -71,7 +82,7 @@ export class StoreService {
     await this.storeRepository.update(id, {
       ...(data.logo !== undefined && { logo: data.logo }),
       ...(data.cover_image !== undefined && { cover_image: data.cover_image }),
-      ...(data.market !== undefined && { market: data.market }),
+      ...(data.market_id !== undefined && { market_id: data.market_id }),
       ...(data.store_name !== undefined && { store_name: data.store_name }),
       ...(data.open_time !== undefined && { open_time: data.open_time }),
       ...(data.closed_time !== undefined && { closed_time: data.closed_time }),
@@ -96,7 +107,7 @@ export class StoreService {
       id: store.id,
       logo: store.logo,
       cover_image: store.cover_image,
-      market: store.market,
+      market_id: store.market_id,
       store_name: store.store_name,
       open_time: store.open_time,
       closed_time: store.closed_time,

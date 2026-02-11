@@ -51,17 +51,23 @@ export class StoreController {
   }
 
   /**
-   * Get all stores (optional filter by vendor_id)
+   * Get all stores (optional filter by vendor_id or market_id)
    */
   @Get()
   async findAll(
     @Query("vendor_id") vendorId?: string,
+    @Query("market_id") marketId?: string,
   ): Promise<StoreListResponseDto> {
     try {
       this.logger.log("[findAll] Fetching stores");
-      const list = vendorId
-        ? await this.storeService.findByVendorId(parseInt(vendorId, 10))
-        : await this.storeService.findAll();
+      let list;
+      if (vendorId) {
+        list = await this.storeService.findByVendorId(parseInt(vendorId, 10));
+      } else if (marketId) {
+        list = await this.storeService.findByMarketId(parseInt(marketId, 10));
+      } else {
+        list = await this.storeService.findAll();
+      }
       return {
         success: true,
         message: "Stores fetched successfully",

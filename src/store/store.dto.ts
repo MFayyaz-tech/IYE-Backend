@@ -22,9 +22,9 @@ export class CreateStoreDto {
   @MaxLength(500)
   cover_image?: string;
 
-  @IsString()
-  @MaxLength(255)
-  market: string;
+  @IsNumber()
+  @Min(1)
+  market_id: number;
 
   @IsString()
   @MaxLength(255)
@@ -65,9 +65,9 @@ export class UpdateStoreDto {
   cover_image?: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  market?: string;
+  @IsNumber()
+  @Min(1)
+  market_id?: number;
 
   @IsOptional()
   @IsString()
@@ -97,7 +97,7 @@ export class StoreResponseDto {
   id: number;
   logo: string | null;
   cover_image: string | null;
-  market: string;
+  market_id: number;
   store_name: string;
   open_time: string | null;
   closed_time: string | null;

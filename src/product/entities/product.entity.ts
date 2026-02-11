@@ -39,6 +39,14 @@ export class Product extends BaseEntity {
   @Column({ type: "simple-array", nullable: true, default: null })
   additional_images: string[] | null;
 
+  /** Number of users who rated this product */
+  @Column({ type: "int", default: 0 })
+  rating_count: number;
+
+  /** Sum of all ratings (1–5); average = rating_total / rating_count */
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  rating_total: number;
+
   @ManyToOne(() => Category, { onDelete: "RESTRICT" })
   @JoinColumn({ name: "category_id" })
   category: Category;

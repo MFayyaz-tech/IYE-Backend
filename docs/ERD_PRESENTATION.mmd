@@ -1,0 +1,174 @@
+%% IYE Backend - Full Database ERD
+%% Use at https://mermaid.live to export PNG/SVG for slides
+
+erDiagram
+    users {
+        int id PK "Primary Key"
+        varchar name
+        varchar email UK "Unique"
+        varchar phone
+        varchar password
+        enum role "user|vendor|rap"
+        boolean is_verified
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    markets {
+        int id PK
+        varchar name
+        varchar location
+        text description
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    stores {
+        int id PK
+        int market_id FK
+        int vendor_id FK
+        varchar store_name
+        varchar logo
+        time open_time
+        time closed_time
+        boolean is_approved
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    categories {
+        int id PK
+        varchar name
+        text description
+        varchar icon
+        varchar image
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    products {
+        int id PK
+        int category_id FK
+        int store_id FK
+        varchar name
+        decimal price
+        int quantity
+        int rating_count
+        decimal rating_total
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    user_addresses {
+        int id PK
+        int user_id FK
+        varchar phone
+        text address
+        varchar title
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    orders {
+        int id PK
+        int store_id FK
+        int user_id FK
+        int address_id FK "nullable"
+        enum status "pending|confirmed|..."
+        boolean is_paid
+        decimal total_bill
+        decimal discount
+        varchar payment_method
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    order_items {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal price
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    order_transactions {
+        int id PK
+        varchar transaction_id
+        int order_id FK
+        int user_id FK
+        int store_id FK
+        varchar payment_method
+        decimal amount
+        enum status
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    reviews {
+        int id PK
+        int product_id FK
+        int user_id FK
+        smallint rating "1-5"
+        text comment
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    wallets {
+        int id PK
+        int user_id FK "Unique"
+        decimal balance
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    wallet_transactions {
+        int id PK
+        int wallet_id FK
+        decimal amount
+        enum type "credit|debit"
+        varchar reference_type
+        int reference_id
+        decimal balance_after
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    kyc {
+        int id PK
+        varchar bvn
+        varchar nin_front
+        varchar nin_back
+        varchar bvn_number
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    users ||--o{ user_addresses : "has addresses"
+    users ||--o{ stores : "vendor of"
+    users ||--o{ orders : "places"
+    users ||--o| wallets : "has wallet"
+    users ||--o{ reviews : "writes"
+    users ||--o{ order_transactions : "pays"
+
+    markets ||--o{ stores : "contains"
+
+    stores ||--o{ products : "sells"
+    stores ||--o{ orders : "receives"
+    stores ||--o{ order_transactions : "receives payment"
+
+    categories ||--o{ products : "categorizes"
+
+    products ||--o{ order_items : "in order"
+    products ||--o{ reviews : "reviewed by"
+
+    user_addresses ||--o{ orders : "delivery to"
+
+    orders ||--o{ order_items : "contains"
+    orders ||--o{ order_transactions : "payment record"
+
+    wallets ||--o{ wallet_transactions : "history"

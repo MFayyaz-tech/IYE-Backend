@@ -111,6 +111,10 @@ export class ProductService {
    * Map entity to response DTO (ensure price is number for JSON)
    */
   mapToResponse(product: Product): ProductResponseDto {
+    const ratingCount = product.rating_count ?? 0;
+    const ratingTotal = Number(product.rating_total ?? 0);
+    const averageRating =
+      ratingCount > 0 ? Math.round((ratingTotal / ratingCount) * 100) / 100 : 0;
     return {
       id: product.id,
       name: product.name,
@@ -123,6 +127,8 @@ export class ProductService {
       unit: product.unit,
       main_image: product.main_image,
       additional_images: product.additional_images,
+      rating_count: ratingCount,
+      average_rating: averageRating,
       created_at: product.created_at,
       updated_at: product.updated_at,
     };

@@ -115,6 +115,10 @@ export class ProductResponseDto {
   unit: string | null;
   main_image: string | null;
   additional_images: string[] | null;
+  /** Number of users who rated this product */
+  rating_count: number;
+  /** Average rating (1–5); 0 if no ratings */
+  average_rating: number;
   created_at: Date;
   updated_at: Date;
 }
